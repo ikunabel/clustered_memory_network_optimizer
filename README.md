@@ -19,12 +19,6 @@ Related publications:
 1) Willem AM Wybo, Jakob Jordan, Benjamin Ellenberger, Ulisses Marti Mengual, Thomas Nevian, Walter Senn (2021) Data-driven reduction of dendritic morphologies with preserved dendro-somatic responses eLife 10:e60936 [DOI](https://doi.org/10.7554/eLife.60936)
 2) Zajzon B, Mahmoudian S, Morrison A, Duarte R. Passing the Message: Representation Transfer in Modular Balanced Networks. Front Comput Neurosci. 2019 Dec 5;13:79. [DOI](10.3389/fncom.2019.00079)
 
-
-## Table of contents [optional]
-    - [Installation](#installation)
-    - [Code repository](#code-repository)
-    - [How to run](#how-to-run)
-
 ## Installation
 
 To run the simulations you you need [NEST](https://github.com/nest/nest-simulator) >= 3.3.  The documentation can be found [here](https://nest-simulator.readthedocs.io/en/v3.3/). I would suggest install nest into a virtual environment. 
