@@ -22,7 +22,6 @@ class Inhibition(Enum):
     SOMA = auto()  # inhibition to somatic compartment
 
 
-# Network and output specific settings
 class Input(Enum):
     # types of inputs
 
@@ -30,8 +29,8 @@ class Input(Enum):
     CONST_RATE = 'const_rate'
 
 
-class PProc(Enum):
-    # types of postprocessing calculations which also determines the data which is recorded
+class PostProcessing(Enum): 
+    # types of post processing calculations which also determines the data which is recorded
 
     CAPACITY = 'cap'
     NETWORK_NMDA_STATS = 'stats'
@@ -39,7 +38,13 @@ class PProc(Enum):
 
 
 def create_outdir(dirname):
-    name = "out_data/" + dirname
+    '''
+    Create a directory in the ouput/ folder for the output data
+
+    Args:
+        dirname (string): name of the directory
+    '''
+    name = "output/" + dirname
     if not os.path.exists(dirname):
         try:
             os.mkdir(name)
@@ -70,18 +75,42 @@ def simulate(
     inp_str=None,
     tstep=None,
     steps=None,
-    seq=None,
     rec_plottrace=False,
     rec_inp=False,
-    raw_path=False,
-):
+    raw_path=False):
+    '''
+    simulate the clustered network
+    
+    Args:
+    r (float): background firing rate
+    g (float): excitation inhibition ratio
+    w (float): weight of the connections (inhibitory connections g*w)
+    rho (float): density of the connectivity (0.1 for random balanced network (ref: Brunel2000))
+    n_cl (int): number of clusters the excitatory population will be split into
+    n_dend (int): number of dendritic compartments of the excitatory neurons
+    n (int): number of neurons in total (0.8 are excitatory 0.2 are inhibitory),
+    mod (float): inter-neural modularity (network modularity)
+    c (float): intra-neural modularity (dendritic modularity)
+    exc_neuron (class): Class of the excitatory neuron model    
+    inh_neuron (class): Class of the inhibitory neuron model    
+    inhib,
+    iw_fac (float): inhibitory weight factor (this is a correction)
+    post_proc (Enum class): one of the PostProcessing options 
+    inp_type (Enum class):  one of the Input option
+    job_name (string): name of the job and the output directory
+    t_sim (float): time of the simulation after initialization 
+    n_cores (int): number of cores used in the MPI PostProcessing
+    inp_str (float): relative strength of the input
+    tstep (float): temporal length of the timestep
+    steps (int): number of steps to simulate the input (this has to be large for the capcity) 
+    rec_plottrace (bool): wheather or not to record the detailed voltage date for plots (expensive) 
+    rec_inp (bool): wheather or not to record the input
+    raw_path (string or False): Path to the raw data if simulation ran to re run the post processing
+    '''
 
     # running the nest simulation
     nest.ResetKernel()
     nest.SetKernelStatus({"local_num_threads": n_cores})
-
-    exc_neuron = L5pyr_simp_sym(n_dend=5)
-    inh_neuron = Single_comp()
 
     # running the network
     network = Network(
@@ -106,6 +135,7 @@ def simulate(
     if rec_plottrace:
         network.rec_plottrace(20)
 
+    # we run the network with a random current to initialize a random membrane voltage for all the neurons
     network.rand_initial_state()
 
     if inp_type == Input.RATE_MODULATION:
@@ -121,16 +151,16 @@ def simulate(
     rec_spikes = False
     rec_voltages = False
     rec_sequence = False  # more like save sequence
-    if post_proc == PProc.CAPACITY:
+    if post_proc == PostProcessing.CAPACITY:
         network.record_spikes(rec_inp=rec_inp)
         rec_spikes = True
         rec_sequence = True
-    elif post_proc == PProc.NETWORK_NMDA_STATS:
+    elif post_proc == PostProcessing.NETWORK_NMDA_STATS:
         network.record_spikes(rec_inp)
         network.record_voltages()
         rec_spikes = True
         rec_voltages = True
-    elif post_proc == PProc.SCALING:
+    elif post_proc == PostProcessing.SCALING:
         network.record_spikes(rec_inp)
         rec_spikes = True
     network.simulate()
@@ -147,11 +177,11 @@ def simulate(
 
 def post(raw, post_proc, params):
 
-    if post_proc == PProc.CAPACITY:
+    if post_proc == PostProcessing.CAPACITY:
         results = sg.post_proc_capacity(raw_data=raw)
-    elif post_proc == PProc.NETWORK_NMDA_STATS:
+    elif post_proc == PostProcessing.NETWORK_NMDA_STATS:
         results = sg.network_nmda_stats(raw, params)
-    elif post_proc == PProc.SCALING:
+    elif post_proc == PostProcessing.SCALING:
         results = sg.net_rate(raw, params)
     else:
         print("Error")
@@ -184,8 +214,38 @@ def run(
     rec_inp=False,
     raw_path=False,
 ):
+'''
+    run the network and safe the data
+    
+    Args:
+    r (float): background firing rate
+    g (float): excitation inhibition ratio
+    w (float): weight of the connections (inhibitory connections g*w)
+    rho (float): density of the connectivity (0.1 for random balanced network (ref: Brunel2000))
+    n_cl (int): number of clusters the excitatory population will be split into
+    n_dend (int): number of dendritic compartments of the excitatory neurons
+    n (int): number of neurons in total (0.8 are excitatory 0.2 are inhibitory),
+    mod (float): inter-neural modularity (network modularity)
+    c (float): intra-neural modularity (dendritic modularity)
+    exc_neuron (class): Class of the excitatory neuron model    
+    inh_neuron (class): Class of the inhibitory neuron model    
+    inhib,
+    iw_fac (float): inhibitory weight factor (this is a correction)
+    post_proc (Enum class): one of the PostProcessing options 
+    inp_type (Enum class):  one of the Input option
+    job_name (string): name of the job and the output directory
+    t_sim (float): time of the simulation after initialization 
+    n_cores (int): number of cores used in the MPI PostProcessing
+    inp_str (float): relative strength of the input
+    tstep (float): temporal length of the timestep
+    steps (int): number of steps to simulate the input (this has to be large for the capcity) 
+    rec_plottrace (bool): wheather or not to record the detailed voltage date for plots (expensive) 
+    rec_inp (bool): wheather or not to record the input
+    raw_path (string or False): Path to the raw data if simulation ran to re run the post processing
+    '''
+
     # start timer to test scaling
-    if post_proc == PProc.SCALING:
+    if post_proc == PostProcessing.SCALING:
         t_begin = time.time()
     # saving the input parameters in a dictionary to include them in a file
     params = {}
@@ -238,13 +298,13 @@ def run(
         )
         raw = raw | params
         with open(
-            "out_data/" + outdir + "/raw/" + "raw" + filename + ".p", "wb"
+            "output/" + outdir + "/raw/" + "raw" + filename + ".p", "wb"
         ) as f:
             pickle.dump(raw, f)
 
     elif raw_path == True:
         with open(
-            "out_data/" + outdir + "/raw/" + "raw" + filename + ".p", "rb"
+            "output/" + outdir + "/raw/" + "raw" + filename + ".p", "rb"
         ) as f:
             raw = pickle.load(f)
     else:
@@ -256,21 +316,21 @@ def run(
     results = results | params
 
     if (
-        post_proc == PProc.CAPACITY
+        post_proc == PostProcessing.CAPACITY
     ):  # save as pickle if we we run the capacity calculation
-        with open("out_data/" + outdir + "/res/res" + filename + ".p", "wb") as f:
+        with open("output/" + outdir + "/res/res" + filename + ".p", "wb") as f:
             pickle.dump(results, f)
-    elif post_proc == PProc.NETWORK_NMDA_STATS:
+    elif post_proc == PostProcessing.NETWORK_NMDA_STATS:
         with open(
-            "out_data/" + outdir + "/res/" + filename + ".json", "w"
+            "output/" + outdir + "/res/" + filename + ".json", "w"
         ) as f:
             json.dump(results, f)
-    elif post_proc == PProc.SCALING:
+    elif post_proc == PostProcessing.SCALING:
         t_end = time.time()
         results["cores"] = n_cores
         results["time"] = t_end - t_begin
         with open(
-            "out_data/"
+            "output/"
             + outdir
             + "/res/"
             + filename
@@ -282,6 +342,8 @@ def run(
 
 
 if __name__ == "__main__":
+
+    # example 
 
     run(
         job_name="test",
@@ -304,7 +366,8 @@ if __name__ == "__main__":
         exc_neuron=L5pyr_simp_sym(),
         inh_neuron=Single_comp(),
         inhib=Inhibition.RAND_DEND,
-        post_proc=PProc.NETWORK_NMDA_STATS,
+        post_proc=PostProcessing.NETWORK_NMDA_STATS,
         rec_plottrace=False,
         rec_inp=False,
     )
+
