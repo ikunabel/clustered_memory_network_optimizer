@@ -10,20 +10,14 @@
 - Inhibitory neurons are single compartment neurons 
 - The compartmental neurons have 5 dendritic compartments and the parameters are derived using [NEAT](https://github.com/WillemWybo/NEAT-2) (not required to run this model)
 
-![[sketch.png]]
-_Fig 1. : Sketch of the network connectivity
+![sketch.png](sketch.png)
+Fig 1. : Sketch of the network connectivity
 
 
 Related publications:
 
 1) Willem AM Wybo, Jakob Jordan, Benjamin Ellenberger, Ulisses Marti Mengual, Thomas Nevian, Walter Senn (2021) Data-driven reduction of dendritic morphologies with preserved dendro-somatic responses eLife 10:e60936 [DOI](https://doi.org/10.7554/eLife.60936)
 2) Zajzon B, Mahmoudian S, Morrison A, Duarte R. Passing the Message: Representation Transfer in Modular Balanced Networks. Front Comput Neurosci. 2019 Dec 5;13:79. [DOI](10.3389/fncom.2019.00079)
-
-
-## Table of contents [optional]
-    - [Installation](#installation)
-    - [Code repository](#code-repository)
-    - [How to run](#how-to-run)
 
 ## Installation
 
