@@ -10,7 +10,7 @@
 - Inhibitory neurons are single compartment neurons 
 - The compartmental neurons have 5 dendritic compartments and the parameters are derived using [NEAT](https://github.com/WillemWybo/NEAT-2) (not required to run this model)
 
-![[sketch.png]]
+![sketch.png](sketch.png)
 _Fig 1. : Sketch of the network connectivity
 
 
