@@ -45,16 +45,12 @@ def objective(trial):
     return (1-avg_cv)**2
 
 def run_optimizer():
-    study = optuna.load_study(
-        study_name="optunaStudy",
-        storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy"
-    )
-    study.optimize(objective, n_trials=100) 
+    study = optuna.create_study(direction="minimize")
+    study.optimize(objective, n_trials=10) 
     print(study.best_params)
     df = pd.DataFrame(study.trials)
     df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
     fig1 = optuna.visualization.plot_optimization_history(study)
     fig1.write_html("./output/test_stats_const_rate/plot/optimization_history.html")
-
 run_optimizer()
 
