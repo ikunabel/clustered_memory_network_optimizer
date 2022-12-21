@@ -46,11 +46,13 @@ def objective(trial):
 
 def run_optimizer():
     study = optuna.create_study(direction="minimize")
-    study.optimize(objective, n_trials=10) 
-    print(study.best_params)
-    df = pd.DataFrame(study.trials)
-    df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
-    fig1 = optuna.visualization.plot_optimization_history(study)
-    fig1.write_html("./output/test_stats_const_rate/plot/optimization_history.html")
+    study.optimize(objective, n_trials=3) 
+    
+    # print(study.best_params)
+    # df = pd.DataFrame(study.trials)
+    # df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
+    # fig1 = optuna.visualization.plot_optimization_history(study)
+    # fig1.write_html("./output/test_stats_const_rate/plot/optimization_history.html")
+
 run_optimizer()
 
