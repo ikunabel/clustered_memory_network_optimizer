@@ -45,11 +45,11 @@ def objective(trial):
     return (1-avg_cv)**2
 
 def run_optimizer():
-    study = optuna.load_study(
+    study = optuna.create_study(
+        load_if_exists=True,
         study_name="optunaStudy",
         #storage="mysql://root@127.0.0.1/optunaStudy",
         storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy",
-        load_if_exists=True
     )
     study.optimize(objective, n_trials=8) 
     print(study.best_params)
