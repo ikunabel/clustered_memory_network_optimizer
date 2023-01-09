@@ -45,12 +45,20 @@ def objective(trial):
     return (1-avg_cv)**2
 
 def run_optimizer():
+
+    storage = optuna.storages.RDBStorage(
+        url="mysql://root@localhost/optunaStudy",
+        #url="/tmp/.s.PGSQL.5432/testdb",
+        engine_kwargs={"connect_args": {"password": '1234', 'unix_socket' : '/p/project/jinm60/users/ilyes-kun1/mysql/mysqld.sock'}},
+    )
+
     study = optuna.create_study(
         load_if_exists=True,
         study_name="optunaStudy",
-        #storage="mysql://root@127.0.0.1/optunaStudy",
-        storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy",
+        #storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy",
+        storage = storage
     )
+    
     study.optimize(objective, n_trials=8) 
     print(study.best_params)
     df = pd.DataFrame(study.trials)
