@@ -47,19 +47,18 @@ def objective(trial):
 def run_optimizer():
 
     storage = optuna.storages.RDBStorage(
-        url="mysql://root@localhost/optunaStudy",
-        #url="/tmp/.s.PGSQL.5432/testdb",
-        engine_kwargs={"connect_args": {"password": '1234', 'unix_socket' : '/p/project/jinm60/users/ilyes-kun1/mysql/mysqld.sock'}},
+            url="mysql://root@jrlogin12i.jureca:3307/optunaStudy",
+        engine_kwargs={"connect_args": {"password": '1234', 'unix_socket' : '/p/project/jinm60/users/ilyes-kun1/mysql/mysqld.sock'}}
     )
 
     study = optuna.create_study(
         load_if_exists=True,
         study_name="optunaStudy",
-        #storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy",
+        #storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy"
         storage = storage
     )
     
-    study.optimize(objective, n_trials=8) 
+    study.optimize(objective, n_trials=100) 
     print(study.best_params)
     df = pd.DataFrame(study.trials)
     df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
