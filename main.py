@@ -298,10 +298,10 @@ def run(
             rec_inp=rec_inp,
         )
         raw = raw | params
-        with open(
-            "output/" + outdir + "/raw/" + "raw" + filename + ".p", "wb"
-        ) as f:
-            pickle.dump(raw, f)
+        # with open(
+        #     "output/" + outdir + "/raw/" + "raw" + filename + ".p", "wb"
+        # ) as f:
+        #     pickle.dump(raw, f)
 
     elif raw_path == True:
         with open(
