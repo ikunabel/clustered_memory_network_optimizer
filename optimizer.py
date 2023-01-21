@@ -58,7 +58,7 @@ def run_optimizer():
         storage = storage
     )
     
-    study.optimize(objective, n_trials=100) 
+    study.optimize(objective, n_trials=20) 
     print(study.best_params)
     df = pd.DataFrame(study.trials)
     df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
