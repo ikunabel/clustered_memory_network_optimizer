@@ -54,16 +54,10 @@ def run_optimizer():
     study = optuna.create_study(
         load_if_exists=True,
         study_name="optunaStudy",
-        #storage="/p/project/jinm60/users/ilyes-kun1/mysql/mysql-install/bin/mysql://root@localhost/optunaStudy"
         storage = storage
     )
     
     study.optimize(objective, n_trials=20) 
-    print(study.best_params)
-    df = pd.DataFrame(study.trials)
-    df.to_csv('./output/test_stats_const_rate/trials/study_trials.csv', index=False)
-    fig1 = optuna.visualization.plot_optimization_history(study)
-    fig1.write_html("./output/test_stats_const_rate/plot/optimization_history.html")
-
+    
 run_optimizer()
 
