@@ -1,8 +1,6 @@
 from main import Input, run, PostProcessing, Inhibition
 from neuron import L5pyr_simp_sym
 from neuron import Single_comp
-import os
-import sys
 import conf
 import optuna
 
@@ -47,7 +45,7 @@ def objective(trial):
 def run_optimizer():
 
     storage = optuna.storages.RDBStorage(
-        url="mysql://root@jrlogin12i.jureca:3307/optunaStudy",
+        url="mysql://root@jrlogin12i.jureca:3307/smallStudy",
         engine_kwargs={"connect_args": 
                         {"password": '1234',
                          'unix_socket': '/p/project/jinm60/users/ilyes-kun1/mysql/mysqld.sock'
@@ -57,11 +55,11 @@ def run_optimizer():
 
     study = optuna.create_study(
         load_if_exists=True,
-        study_name="optunaStudy",
+        study_name="smallStudy",
         storage = storage
     )
     
-    study.optimize(objective, n_trials=20) 
+    study.optimize(objective, n_trials=4) 
     
 
 run_optimizer()
