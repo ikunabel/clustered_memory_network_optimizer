@@ -324,11 +324,11 @@ def run(
     ):  # save as pickle if we we run the capacity calculation
         with open("output/" + outdir + "/res/res" + filename + ".p", "wb") as f:
             pickle.dump(results, f)
-    elif post_proc == PostProcessing.NETWORK_NMDA_STATS:
-        with open(
-            "output/" + outdir + "/res/" + filename + ".json", "w"
-        ) as f:
-            json.dump(results, f)
+    # elif post_proc == PostProcessing.NETWORK_NMDA_STATS:
+    #     with open(
+    #         "output/" + outdir + "/res/" + filename + ".json", "w"
+    #     ) as f:
+    #         json.dump(results, f)
     elif post_proc == PostProcessing.SCALING:
         t_end = time.time()
         results["cores"] = n_cores

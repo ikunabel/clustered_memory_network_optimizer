@@ -45,7 +45,7 @@ def objective(trial):
 def run_optimizer():
 
     storage = optuna.storages.RDBStorage(
-        url="mysql://root@jrlogin12i.jureca:3307/smallStudy",
+        url="mysql://root@jrlogin12i.jureca:3307/exampleStudy",
         engine_kwargs={"connect_args": 
                         {"password": '1234',
                          'unix_socket': '/p/project/jinm60/users/ilyes-kun1/mysql/mysqld.sock'
@@ -55,7 +55,7 @@ def run_optimizer():
 
     study = optuna.create_study(
         load_if_exists=True,
-        study_name="smallStudy",
+        study_name="exampleStudy",
         storage = storage
     )
     
