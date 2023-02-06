@@ -2,6 +2,7 @@ from main import Input, run, PostProcessing, Inhibition
 from neuron import L5pyr_simp_sym
 from neuron import Single_comp
 import conf
+import spikelog
 import optuna
 
 def objective(trial):
@@ -37,10 +38,16 @@ def objective(trial):
         rec_plottrace=False,
         rec_inp=False,
     )
-    #loss function here 
-    #mean squared error
+    #Loss function here 
+    #Mean squared error
     avg_cv = conf.trial_results.get('avg_cv')
-    return (1-avg_cv)**2
+
+    #Ignore objective value if SpikeList not complete, i.e. not every neuron is active 
+    if spikelog.spikelist_flag:
+        print(spikelog.spikelist_log + ", " + str(spikelog.spikelist_count) + " times")
+        return 2
+    else:
+        return (1-avg_cv)**2
 
 def run_optimizer():
 
@@ -59,7 +66,6 @@ def run_optimizer():
         storage = storage
     )
     
-    study.optimize(objective, n_trials=4) 
-    
+    study.optimize(objective, n_trials=10)
 
 run_optimizer()

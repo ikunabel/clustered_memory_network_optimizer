@@ -1,3 +1,4 @@
+import spikelog
 from typing import DefaultDict
 import numpy as np
 from numpy.core.function_base import linspace
@@ -623,10 +624,14 @@ class SpikeList(object):
             try:
                 new_SpkList.spiketrains[id_] = self.spiketrains[id_]
             except Exception:
-                print(
-                    "id %d is not in the source SpikeList or already in the new one"
-                    % id_
-                )
+                # print(
+                #     "id %d is not in the source SpikeList or already in the new one"
+                #     % id_
+                # )
+                spikelog.spikelist_flag |= True
+                spikelog.spikelist_log = "ID XY is not in the source SpikeList or already in the new one"
+                spikelog.spikelist_count += 1
+
         return new_SpkList
 
     #######################################################################
